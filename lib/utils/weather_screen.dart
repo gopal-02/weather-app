@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:weather_app/utils/hourly_forecast_cards.dart';
+import 'package:weather_app/utils/additional_info.dart';
 
 class WeatherScreen extends StatelessWidget {
   const WeatherScreen({super.key});
@@ -100,6 +101,14 @@ class WeatherScreen extends StatelessWidget {
             ),
             SizedBox(
               height: 12,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                AdditionalInfo(),
+                AdditionalInfo(),
+                AdditionalInfo(),
+              ],
             ),
           ],
         ),
