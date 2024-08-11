@@ -18,8 +18,8 @@ class _WeatherScreenState extends State<WeatherScreen> {
   String currentWeatherCondition = '';
   String cityName = 'Delhi';
   double currentWindCondition = 0.0;
-  double currentHumidity = 0;
-  double currentPressure = 0;
+  double currentHumidity = 0.0;
+  double currentPressure = 0.0;
   TextEditingController cityController = TextEditingController();
 
   @override
@@ -46,14 +46,14 @@ class _WeatherScreenState extends State<WeatherScreen> {
       } else {
         print('Error: $response.statusCode');
       }
-      final hourResponse = await http.get(Uri.parse(
-          'https://api.openweathermap.org/data/2.5/forecast?q=$cityName&appid=$apiKey'));
-      if (response.statusCode == 200) {
-        final hourlyData = jsonDecode(hourResponse.body);
-        print(hourResponse.body);
-      } else {
-        print('Error: $response.statusCode');
-      }
+      // final hourResponse = await http.get(Uri.parse(
+      //     'https://api.openweathermap.org/data/2.5/forecast?q=$cityName&appid=$apiKey'));
+      // if (response.statusCode == 200) {
+      //   final hourlyData = jsonDecode(hourResponse.body);
+      //   print(hourResponse.body);
+      // } else {
+      //   print('Error: $response.statusCode');
+      // }
     } catch (e) {
       print('Error: $e');
     }
@@ -91,174 +91,177 @@ class _WeatherScreenState extends State<WeatherScreen> {
           ? const Center(
               child: CircularProgressIndicator(),
             )
-          : Padding(
-              padding: const EdgeInsets.all(15.0),
-              child: Column(
-                children: [
-                  SizedBox(
-                    width: double.infinity,
-                    child: Card(
-                      elevation: 10,
-                      child: Column(
-                        children: [
-                          Text(
-                            '$currentTemperature °C',
-                            style: const TextStyle(
-                              fontSize: 32,
-                              fontWeight: FontWeight.bold,
+          : SingleChildScrollView(
+            child: Padding(
+                padding: const EdgeInsets.all(15.0),
+                child: Column(
+                  children: [
+                    SizedBox(
+                      width: double.infinity,
+                      child: Card(
+                        elevation: 10,
+                        child: Column(
+                          children: [
+                            Text(
+                              '${currentTemperature.toStringAsFixed(2)} °C',
+                              style: const TextStyle(
+                                fontSize: 32,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
-                          ),
-                          Icon(
-                            currentWeatherCondition == 'Clouds' ||
-                                    currentWeatherCondition == 'Mist' ||
-                                    currentWeatherCondition == 'Rain' ||
-                                    currentWeatherCondition == 'Haze'
-                                ? Icons.wb_cloudy
-                                : Icons.wb_sunny,
-                            size: 64,
-                            color: currentWeatherCondition == 'Clouds' ||
-                                    currentWeatherCondition == 'Mist' ||
-                                    currentWeatherCondition == 'Rain' ||
-                                    currentWeatherCondition == 'Haze'
-                                ? Colors.blueGrey
-                                : Colors.yellow,
-                          ),
-                          const SizedBox(
-                            height: 12,
-                          ),
-                          Text(
-                            currentWeatherCondition,
-                            style: const TextStyle(fontSize: 24),
-                          ),
+                            Icon(
+                              currentWeatherCondition == 'Clouds' ||
+                                      currentWeatherCondition == 'Mist' ||
+                                      currentWeatherCondition == 'Rain' ||
+                                      currentWeatherCondition == 'Haze'
+                                  ? Icons.wb_cloudy
+                                  : Icons.wb_sunny,
+                              size: 64,
+                              color: currentWeatherCondition == 'Clouds' ||
+                                      currentWeatherCondition == 'Mist' ||
+                                      currentWeatherCondition == 'Rain' ||
+                                      currentWeatherCondition == 'Haze'
+                                  ? Colors.blueGrey
+                                  : Colors.yellow,
+                            ),
+                            const SizedBox(
+                              height: 12,
+                            ),
+                            Text(
+                              currentWeatherCondition,
+                              style: const TextStyle(fontSize: 24),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    const Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text('Hourly Forecast',
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                          )),
+                    ),
+                    const SizedBox(
+                      height: 12,
+                    ),
+                    const SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: [
+                          HourlyForecastCard(),
+                          HourlyForecastCard(),
+                          HourlyForecastCard(),
+                          HourlyForecastCard(),
+                          HourlyForecastCard(),
+                          HourlyForecastCard()
                         ],
                       ),
                     ),
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  const Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text('Hourly Forecast',
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    const Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        'Additional Info',
                         style: TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
-                        )),
-                  ),
-                  const SizedBox(
-                    height: 12,
-                  ),
-                  const SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 12,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        HourlyForecastCard(),
-                        HourlyForecastCard(),
-                        HourlyForecastCard(),
-                        HourlyForecastCard(),
-                        HourlyForecastCard(),
-                        HourlyForecastCard()
+                        AdditionalInfo(
+                          title: 'Wind',
+                          value: '$currentWindCondition km/h',
+                          icon: Icons.air,
+                        ),
+                        AdditionalInfo(
+                          title: 'Humidity',
+                          value: '${currentHumidity.round()}%',
+                          icon: Icons.water,
+                        ),
+                        AdditionalInfo(
+                          title: 'Pressure',
+                          value: '$currentPressure hPa',
+                          icon: Icons.arrow_downward,
+                        ),
                       ],
                     ),
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  const Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      'Additional Info',
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                      ),
+                    const SizedBox(
+                      height: 35,
                     ),
-                  ),
-                  const SizedBox(
-                    height: 12,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      AdditionalInfo(
-                        title: 'Wind',
-                        value: '$currentWindCondition km/h',
-                        icon: Icons.air,
-                      ),
-                      AdditionalInfo(
-                        title: 'Humidity',
-                        value: '${currentHumidity.round()}%',
-                        icon: Icons.water,
-                      ),
-                      AdditionalInfo(
-                        title: 'Pressure',
-                        value: '$currentPressure hPa',
-                        icon: Icons.arrow_downward,
-                      ),
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 35,
-                  ),
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: () async {
-                        showDialog(
-                            context: context,
-                            builder: (context) {
-                              return AlertDialog(
-                                title: const Text('Change Location'),
-                                content: TextField(
-                                  controller: cityController,
-                                  decoration: const InputDecoration(
-                                      hintText: 'Enter City Name'),
-                                  inputFormatters: [
-                                    FilteringTextInputFormatter.allow(
-                                        RegExp('[a-zA-Z]'))
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: () async {
+                          showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  title: const Text('Change Location'),
+                                  content: TextField(
+                                    controller: cityController,
+                                    decoration: const InputDecoration(
+                                        hintText: 'Enter City Name'),
+                                    inputFormatters: [
+                                      FilteringTextInputFormatter.allow(
+                                          RegExp('[a-zA-Z]'))
+                                    ],
+                                    autofocus: true,
+                                  ),
+                                  actions: [
+                                    ElevatedButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                      child: const Text('Cancel'),
+                                    ),
+                                    ElevatedButton(
+                                      onPressed: () {
+                                        setState(() {
+                                          cityName = cityController.text;
+                                          isLoading = true;
+                                        });
+                                        cityController.clear();
+                                        getCurrentWeather();
+                                        Navigator.pop(context);
+                                      },
+                                      child: const Text('Submit'),
+                                    ),
                                   ],
-                                ),
-                                actions: [
-                                  ElevatedButton(
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                    },
-                                    child: const Text('Cancel'),
-                                  ),
-                                  ElevatedButton(
-                                    onPressed: () {
-                                      setState(() {
-                                        cityName = cityController.text;
-                                        isLoading = true;
-                                      });
-                                      cityController.clear();
-                                      getCurrentWeather();
-                                      Navigator.pop(context);
-                                    },
-                                    child: const Text('Submit'),
-                                  ),
-                                ],
-                              );
-                            });
-                      },
-                      style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.all(16.0),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16.0),
+                                );
+                              });
+                        },
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.all(16.0),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16.0),
+                          ),
                         ),
-                      ),
-                      child: const Text(
-                        'Change Location',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
+                        child: const Text(
+                          'Change Location',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
+          ),
     );
   }
 }
