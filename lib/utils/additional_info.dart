@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
 
 class AdditionalInfo extends StatelessWidget {
-  const AdditionalInfo({super.key});
+  final String title;
+  final String value;
+  final IconData icon;
+  const AdditionalInfo(
+      {super.key,
+      required this.title,
+      required this.value,
+      required this.icon});
 
   @override
   Widget build(BuildContext context) {
@@ -14,24 +21,27 @@ class AdditionalInfo extends StatelessWidget {
         elevation: 6,
         child: Container(
           width: 120,
-          child: const Column(
-            children: [
-              Icon(
-                Icons.water_drop,
-                size: 32,
-                color: Colors.blue,
-              ),
-              SizedBox(height: 8),
-              Text(
-                'Humidity',
-                style: TextStyle(fontSize: 16),
-              ),
-              SizedBox(height: 8),
-              Text(
-                '20 %',
-                style: TextStyle(fontSize: 16),
-              ),
-            ],
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              children: [
+                Icon(
+                  icon,
+                  size: 32,
+                  color: Colors.blue,
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  title,
+                  style: const TextStyle(fontSize: 16),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  value,
+                  style: const TextStyle(fontSize: 16),
+                ),
+              ],
+            ),
           ),
         ),
       ),
